@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'time_location',
     'location',
     'habit',
+    'drf_yasg',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -141,3 +144,38 @@ REST_FRAMEWORK = {
 # Замена на права доступа для всех, права на авторизацию указываются отдельно
     'DEFAULT_PERMISSION_CLASSES': [
    'rest_framework.permissions.AllowAny',]}
+
+
+CORS_ALLOWED_ORIGINS = [
+    '*', # адрес моего фронтенда
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    '*', #'*'если вы хотите разрешить запросы от любого домена.
+
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+
+# Настройки для Celery
+
+# URL-адрес брокера сообщений
+CELERY_BROKER_URL = 'redis://localhost:6379' # Redis,по умолчанию работает на порту 6379
+
+# URL-адрес брокера результатов, также Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+# Часовой пояс для работы Celery
+CELERY_TIMEZONE = 'Asia/Yekaterinburg'
+
+# Флаг отслеживания выполнения задач
+CELERY_TASK_TRACK_STARTED = True
+
+# Максимальное время на выполнение задачи
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+
+# настройка брокера Redis
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
