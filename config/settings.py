@@ -147,11 +147,12 @@ REST_FRAMEWORK = {
 
 
 CORS_ALLOWED_ORIGINS = [
-    '*', # адрес моего фронтенда
+    'https://read-and-write.example.com', # адрес моего фронтенда
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    '*', #'*'если вы хотите разрешить запросы от любого домена.
+    'http://localhost:8000', #'*'если вы хотите разрешить запросы от любого домена.
+    'https://read-and-write.example.com'
 
 ]
 

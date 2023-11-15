@@ -6,6 +6,7 @@ from habit.paginator import MyPagination
 from habit.permissions import IsOwnerOrReadOnly, ReadOnlyIfPublic
 
 from habit.serializer import HabitSerializer
+from .tasks import send_reminder_email
 
 
 class HabitViewSet(viewsets.ModelViewSet):
@@ -19,7 +20,9 @@ class HabitCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)  # Сохранение владельца при создании объекта
+        habit_instance = serializer.save(user=self.request.user)  # Сохранение владельца при создании объекта
+        send_reminder_email.delay(self.request.user.email, habit_instance.name_habit)
+
 
 
 class HabitListView(generics.ListCreateAPIView):

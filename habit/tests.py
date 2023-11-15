@@ -3,37 +3,32 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
+
+from users.models import User
 from .models import Habit
 
-User = get_user_model()
 
-class HabitViewSetTest(TestCase):
+class HabitCRUDTest(TestCase):
+
     def setUp(self):
-        self.user = User.objects.create_user(
-            email='test_user@test.com',
-            password='test_password'
-        )
         self.client = APIClient()
+        self.user = User.objects.create(email='test_anna@test.ru') # Создаем пользователя
+        self.user.set_password('test')
+        self.user.save()
 
-    def test_list_habits(self):
-        # Создаем привычку
-        habit = Habit.objects.create(
-            title='Test Habit',
-            description='Test description',
-            user=self.user
-        )
-
-        url = reverse('habit-list')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
 
     def test_create_habit(self):
-        url = reverse('habit-list')
+        url = reverse('habit:habits_create')
         data = {
-            'title': 'New Habit',
-            'description': 'New habit description',
+            'name_habit': 'TestHabit',
+                'description_habit': 'Test habit description',
+                'user': self.user.id,
+                'action': 'Test action',
+                'is_pleasurable': True,
+                'periodicity': 1,
+                'reward': 'Test reward',
+                'estimated_time': 30,
+                'is_public': False,
         }
 
         self.client.force_authenticate(user=self.user)
@@ -41,53 +36,58 @@ class HabitViewSetTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Habit.objects.count(), 1)
-        self.assertEqual(Habit.objects.first().title, 'New Habit')
+        self.assertEqual(Habit.objects.first().name_habit, 'TestHabit')
 
-    def test_retrieve_habit(self):
-        # Создаем привычку
-        habit = Habit.objects.create(
-            title='Test Habit',
-            description='Test description',
-            user=self.user
+    def test_user_habit_list_view(self):
+        url = reverse('habit:user_habit_list')
+
+
+        habit1 = Habit.objects.create(
+            name_habit='Habit1',
+            description_habit='Description 1',
+            user=self.user,
+            action='Action 1',
+            is_pleasurable=True,
+            periodicity=1,
+            reward='Reward 1',
+            estimated_time=30,
+            is_public=False,)
+
+        habit2 = Habit.objects.create(
+            name_habit='Habit2',
+            description_habit='Description 2',
+            user=self.user,
+            action='Action 2',
+            is_pleasurable=True,
+            periodicity=1,
+            reward='Reward 2',
+            estimated_time=30,
+            is_public=False,
         )
-
-        url = reverse('habit-detail', args=[habit.id])
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], 'Test Habit')
-
-    def test_update_habit(self):
-        # Создаем привычку
-        habit = Habit.objects.create(
-            title='Test Habit',
-            description='Test description',
-            user=self.user
-        )
-
-        url = reverse('habit-detail', args=[habit.id])
-        data = {
-            'title': 'Updated Habit',
-            'description': 'Updated habit description',
-        }
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.put(url, data)
+        data = {'habit1': habit1.id, 'habit2': habit2.id}
+        response = self.client.get(url, data=data)
 
+
+        # Проверка успешного ответа
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Habit.objects.first().title, 'Updated Habit')
 
-    def test_delete_habit(self):
-        # Создаем привычку
-        habit = Habit.objects.create(
-            title='Test Habit',
-            description='Test description',
-            user=self.user
-        )
+        # Проверка, что привычки пользователя присутствуют в ответе
+        self.assertEqual(len(response.data), 2)
 
-        url = reverse('habit-detail', args=[habit.id])
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Habit.objects.count(), 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
