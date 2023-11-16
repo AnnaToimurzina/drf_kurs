@@ -5,7 +5,7 @@ class Time(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name_time, self.description
+        return f"{self.name_time} - {self.description}"
 
     class Meta:
         verbose_name = 'Время суток'

@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+import os
+
+# Загрузка переменных окружения из файла .env
+load_dotenv()
+
 from celery import shared_task
 from celery.schedules import crontab
 from django.utils import timezone
@@ -20,8 +26,9 @@ def send_reminder_email(user_email, user_id, habit_name):
     )
 
     # Отправка напоминания через Telegram
-    bot_token = '6927582053:AAH11jSdWvuOWIuEtrokeDuBGacaiJr7hhk'
+    bot_token = os.getenv('BOT_TOKEN')
     bot = Bot(token=bot_token)
+
     user = User.objects.get(pk=user_id)
     chat_id = user.telegram_chat_id  # Предполагается, что у пользователя есть поле telegram_chat_id
     bot.send_message(chat_id, f"Don't forget to complete your habit: {habit_name}")
@@ -42,7 +49,7 @@ def check_and_send_reminders():
 
 app.conf.beat_schedule = {
     'check-and-send-reminders': {
-        'task': 'ваш_проект.tasks.check_and_send_reminders',
+        'task': 'habit.tasks.check_and_send_reminders',
         'schedule': crontab(minute=0, hour=15),  # Каждый день в 15:00
     },
 }

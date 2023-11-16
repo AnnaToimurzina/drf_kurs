@@ -1,0 +1,27 @@
+# Virtual Environment
+venv/
+
+# Основные файлы Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Файлы окружения
+.env
+
+# Файлы проекта
+*.pyproj
+*.pycproj
+*.sqlite3
+
+# Логи и временные файлы
+*.log
+*.swp
+*.swo
+
+# Настройки для различных IDE и редакторов
+.idea/
+.vscode/
+*.sublime-*
+

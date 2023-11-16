@@ -19,7 +19,7 @@ class Habit(models.Model):
     linked_habits = models.ManyToManyField('self', blank=True, symmetrical=False)  # связанная привычка
 
     def __str__(self):
-        return self.user, self. name_habit, self.description_habit, self.name_time, self.action, self.is_pleasurable, self.periodicity, self.reward, self.estimated_time, self.is_public, self.linked_habits
+        return f"{self.user} - {self.name_habit}"
 
     class Meta:
         verbose_name = 'Привычки'

@@ -6,7 +6,7 @@ class Location(models.Model):
     description_location = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name_location, self.description_location
+        return f"{self.name_location} - {self.description_location}"
 
 
     class Meta:
