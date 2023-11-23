@@ -1,0 +1,17 @@
+# Dockerfile для Celery
+FROM python:3
+
+WORKDIR /code
+
+# Устанавливаем зависимости для Celery
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
+# Копируем проект
+COPY . .
+
+# Устанавливаем переменные окружения для Celery
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
+
+# Команда для запуска Celery
+CMD ["celery", "-A", "config", "worker", "-l", "info"]

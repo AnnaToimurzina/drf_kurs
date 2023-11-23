@@ -1,0 +1,4 @@
+# Dockerfile для Redis
+'''использование последней версии образа Redis'''
+
+FROM redis:latest
