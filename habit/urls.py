@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 from habit.apps import HabitConfig
 from habit.views import HabitListView, HabitCreateView, HabitRetrieveAPIView, HabitDestroyAPIView, \
-    HabitUpdateAPIView, HabitViewSet, UserHabitListView, PublicHabitListView
+    HabitUpdateAPIView, HabitViewSet, UserHabitListView, PublicHabitListView, healthcheck
 
 app_name = HabitConfig.name
 
@@ -18,4 +18,5 @@ urlpatterns = [path('habits/create/', HabitCreateView.as_view(), name='habits_cr
     path('habits/delete/<int:pk>/', HabitDestroyAPIView.as_view(), name='habits_delete'),
     path('my-habits/', UserHabitListView.as_view(), name='user_habit_list'),
     path('public-habits/', PublicHabitListView.as_view(), name='public_habit_list'),
+    path('healthcheck/', healthcheck, name='healthcheck')
 ] + router.urls

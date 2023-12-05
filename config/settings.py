@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -147,11 +149,12 @@ REST_FRAMEWORK = {
    'rest_framework.permissions.AllowAny',]}
 
 
-CORS_ALLOWED_ORIGINS=config('CORS_ALLOWED_ORIGINS')
+'''CORS_ALLOWED_ORIGINS=config('CORS_ALLOWED_ORIGINS')'''
 
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS')
+'''CSRF_TRUSTED_ORIGINS="http://localhost:8000/"'''
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Настройки для Celery
@@ -167,8 +170,10 @@ CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
 # Часовой пояс для работы Celery
 CELERY_TIMEZONE = 'Asia/Yekaterinburg'
 
+
 # Флаг отслеживания выполнения задач
 CELERY_TASK_TRACK_STARTED = True
+
 
 # Максимальное время на выполнение задачи
 CELERY_TASK_TIME_LIMIT = 30 * 60

@@ -14,6 +14,11 @@ services:
       - db
       - redis
     command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/healthcheck" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # Сервис для базы данных PostgreSQL
   db:
@@ -24,12 +29,22 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d ${DB_NAME} -U ${DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Сервис Redis
   redis:
     image: "redis:latest"
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # Сервис Celery
   celery:
@@ -39,8 +54,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - web
-      - redis
-    command: ["celery", "-A", "config", "worker", "-l", "info"]
-
-
+      web:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: [ "celery", "-A", "config", "worker", "-l", "info" ]
